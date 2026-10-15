@@ -1,0 +1,105 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../lib/config';
+
+interface Props {
+  links: { href: string; label: string }[];
+}
+const { links } = Astro.props;
+---
+<header class="header" data-header>
+  <div class="container header__barra">
+    <a href="#topo" class="header__logo" aria-label="FORTIS Training Center — voltar ao início">
+      <img src={url('brand/logo-horizontal-white.png')} alt="FORTIS" width="1045" height="200" />
+    </a>
+    <nav class="header__nav" aria-label="Navegação principal">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <a class="btn btn--vermelho header__cta" href="#contacto" data-track="click_cta" data-track-label="header">Quero saber mais</a>
+    <button class="header__menu-btn" type="button" aria-expanded="false" aria-controls="menu-movel" data-menu-btn>
+      <span class="sr-only" data-menu-label>Abrir menu</span>
+      <Icon name="menu" size={22} class="icone-abrir" />
+      <Icon name="fechar" size={22} class="icone-fechar" />
+    </button>
+  </div>
+  <nav id="menu-movel" class="header__movel" aria-label="Navegação móvel" hidden>
+    <div class="container">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a class="btn btn--vermelho" href="#contacto" data-track="click_cta" data-track-label="menu">Quero saber mais</a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header { position: sticky; top: 0; z-index: 50; background: var(--antracite); border-bottom: 1px solid var(--linha-escura); }
+  .header__barra { height: var(--header-h); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .header__logo { display: flex; align-items: center; flex-shrink: 0; min-height: 44px; }
+  .header__logo img { height: 30px; width: auto; }
+  .header__nav { display: flex; align-items: center; gap: 28px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .header__nav a { color: var(--texto-claro-2); text-decoration: none; padding: 12px 0; transition: color 0.2s ease; }
+  .header__nav a:hover, .header__nav a[aria-current='true'] { color: var(--branco); }
+  .header__cta { min-height: 44px; padding: 0 22px; font-size: 13px; flex-shrink: 0; }
+  .header__menu-btn {
+    display: none; width: 44px; height: 44px; align-items: center; justify-content: center;
+    background: transparent; border: 1px solid #4a4a4a; color: var(--branco); cursor: pointer; padding: 0;
+  }
+  .header__menu-btn :global(.icone-fechar) { display: none; }
+  .header__menu-btn[aria-expanded='true'] :global(.icone-abrir) { display: none; }
+  .header__menu-btn[aria-expanded='true'] :global(.icone-fechar) { display: block; }
+  .header__movel { border-top: 1px solid var(--linha-escura); background: var(--antracite); }
+  .header__movel .container { display: flex; flex-direction: column; padding-block: 8px 20px; }
+  .header__movel a:not(.btn) {
+    color: var(--branco); text-decoration: none; padding: 14px 0; border-bottom: 1px solid var(--linha-escura);
+    font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .header__movel .btn { margin-top: 16px; }
+
+  @media (max-width: 1040px) {
+    .header__nav { gap: 20px; }
+  }
+  @media (max-width: 960px) {
+    .header__nav, .header__cta { display: none; }
+    .header__menu-btn { display: inline-flex; }
+    .header__logo img { height: 26px; }
+  }
+  @media (min-width: 961px) {
+    .header__movel { display: none !important; }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+  const menu = document.getElementById('menu-movel');
+  const label = document.querySelector('[data-menu-label]');
+  const setOpen = (open: boolean) => {
+    if (!btn || !menu) return;
+    btn.setAttribute('aria-expanded', String(open));
+    menu.hidden = !open;
+    if (label) label.textContent = open ? 'Fechar menu' : 'Abrir menu';
+  };
+  btn?.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && btn?.getAttribute('aria-expanded') === 'true') { setOpen(false); btn.focus(); }
+  });
+
+  // Marca a secção atual na navegação
+  const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.header__nav a'));
+  const sections = navLinks
+    .map((a) => document.querySelector<HTMLElement>(a.getAttribute('href') || ''))
+    .filter((s): s is HTMLElement => !!s);
+  if ('IntersectionObserver' in window && sections.length) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          navLinks.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${en.target.id}`)));
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    sections.forEach((s) => io.observe(s));
+  }
+</script>

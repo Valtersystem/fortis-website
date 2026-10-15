@@ -1,0 +1,67 @@
+---
+import { site } from '../content/site';
+import { url } from '../lib/config';
+import Icon from './Icon.astro';
+
+const { hero } = site;
+const temMedia = !!(hero.imagem || hero.video);
+const conceptual = !temMedia || hero.imagem?.conceptual;
+---
+<section id="topo" class:list={['hero', { textura: !temMedia }]} aria-labelledby="hero-titulo">
+  {hero.video ? (
+    <video class="hero__media" autoplay muted loop playsinline preload="metadata" poster={hero.imagem ? url(hero.imagem.src) : undefined} aria-hidden="true">
+      <source src={url(hero.video)} type="video/mp4" />
+    </video>
+  ) : hero.imagem ? (
+    <img class="hero__media" src={url(hero.imagem.src)} alt="" width={hero.imagem.largura} height={hero.imagem.altura} fetchpriority="high" decoding="async" />
+  ) : null}
+  <div class="hero__overlay" aria-hidden="true"></div>
+  {conceptual && (
+    <p class="hero__nota" aria-hidden="true"><Icon name="video" size={16} stroke={1.75} />Imagem conceptual do ambiente de treino</p>
+  )}
+  <div class="container hero__conteudo">
+    <p class="hero__etiqueta">{hero.etiqueta}</p>
+    <h1 id="hero-titulo" class="hero__titulo">{hero.titulo} <span>{hero.destaque}</span></h1>
+    <p class="hero__sub">{hero.subtitulo}</p>
+    <div class="hero__ctas">
+      <a class="btn btn--vermelho btn--lg" href="#contacto" data-track="click_cta" data-track-label="hero">Quero saber mais <Icon name="seta" size={18} stroke={2.25} /></a>
+      <a class="btn btn--contorno btn--lg" href="#sobre">Conhecer a FORTIS</a>
+    </div>
+    <ul class="hero__temas" aria-label="O que vais encontrar">
+      {hero.temas.map((t) => <li>{t}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: min(820px, calc(100svh - var(--header-h))); display: flex; align-items: flex-end; overflow: hidden; }
+  .hero__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; max-width: none; }
+  .hero__overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,20,20,.4) 0%, rgba(20,20,20,.6) 45%, rgba(20,20,20,.96) 100%); }
+  .hero__nota {
+    position: absolute; top: 24px; right: var(--gutter); margin: 0; display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #9e9e9e;
+  }
+  .hero__conteudo { position: relative; width: 100%; padding-top: 140px; padding-bottom: 64px; }
+  .hero__etiqueta {
+    display: flex; align-items: center; gap: 14px; margin: 0 0 28px;
+    font-size: 13px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--cinza);
+  }
+  .hero__etiqueta::before { content: ''; width: 40px; height: 3px; background: var(--vermelho); }
+  .hero__titulo {
+    margin: 0; font-weight: 800; font-size: clamp(44px, 8.4vw, 120px); line-height: .94;
+    letter-spacing: -.025em; text-transform: uppercase; max-width: 12ch;
+  }
+  .hero__titulo span { background: var(--vermelho); padding: 0 .14em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .hero__sub { margin: 32px 0 0; font-size: clamp(17px, 1.6vw, 21px); line-height: 1.5; color: var(--cinza); max-width: 34ch; font-weight: 500; }
+  .hero__ctas { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero__temas {
+    list-style: none; margin: 64px 0 0; padding: 24px 0 0; border-top: 1px solid #3d3d3d;
+    display: flex; flex-wrap: wrap; gap: 12px 40px;
+    font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-claro-2);
+  }
+  @media (max-width: 600px) {
+    .hero__ctas .btn { width: 100%; }
+    .hero__temas { gap: 10px 24px; font-size: 12px; }
+    .hero__nota { left: var(--gutter); right: var(--gutter); font-size: 10px; }
+  }
+</style>

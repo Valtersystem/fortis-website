@@ -1,0 +1,44 @@
+---
+import { site } from '../content/site';
+import Icon from './Icon.astro';
+
+const { sobre } = site;
+const icones = { forca: 'forca', evolucao: 'evolucao', comunidade: 'comunidade' } as const;
+---
+<section id="sobre" class="sec sec--claro" aria-labelledby="sobre-titulo">
+  <div class="container sobre">
+    <div class="sobre__titulo revelar">
+      <p class="eyebrow">Sobre a FORTIS</p>
+      <h2 id="sobre-titulo" class="h2">{sobre.titulo} <em>{sobre.destaque}</em></h2>
+    </div>
+    <div class="sobre__texto revelar">
+      <p class="lead">{sobre.texto}</p>
+      <p>{sobre.texto2}</p>
+    </div>
+    <ul class="sobre__valores">
+      {sobre.valores.map((v) => (
+        <li class="revelar">
+          <Icon name={icones[v.icone as keyof typeof icones]} size={36} stroke={1.75} class="sobre__icone" />
+          <h3>{v.titulo}</h3>
+          <p>{v.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .sobre { display: flex; flex-wrap: wrap; gap: 56px 80px; }
+  .sobre__titulo { flex: 1 1 420px; min-width: 0; }
+  .sobre__texto { flex: 1 1 440px; min-width: 0; }
+  .sobre__texto .lead { color: #333; }
+  .sobre__texto p + p { margin: 20px 0 0; font-size: 17px; line-height: 1.7; color: var(--texto-escuro-3); }
+  .sobre__valores {
+    flex: 1 1 100%; list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--antracite);
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 32px;
+  }
+  .sobre__valores li { padding: 32px 0 8px; display: flex; flex-direction: column; gap: 14px; }
+  .sobre__valores :global(.sobre__icone) { color: var(--vermelho); }
+  .sobre__valores h3 { margin: 0; font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+  .sobre__valores p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--texto-escuro-3); }
+</style>

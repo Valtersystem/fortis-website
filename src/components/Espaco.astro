@@ -1,0 +1,68 @@
+---
+import { site } from '../content/site';
+import { PREVIEW, visivel } from '../lib/config';
+import Imagem from './Imagem.astro';
+
+const { espaco } = site;
+const indicadores = espaco.indicadores.filter(visivel);
+// Galeria: imagens reais, ou 6 marcadores conceptuais enquanto não existirem.
+const galeria = espaco.galeria.length
+  ? espaco.galeria.slice(0, 6).map((img, i) => ({ img, legenda: img.alt, i }))
+  : espaco.legendasMarcadores.slice(0, 6).map((legenda, i) => ({ img: null, legenda, i }));
+---
+<section id="espaco" class="sec sec--cinza" aria-labelledby="espaco-titulo">
+  <div class="container">
+    <div class="esp__topo">
+      <div class="esp__texto revelar">
+        <p class="eyebrow">O espaço</p>
+        <h2 id="espaco-titulo" class="h2">{espaco.titulo} <em>{espaco.destaque}</em></h2>
+        <p class="esp__desc">{espaco.texto}</p>
+      </div>
+      {indicadores.length > 0 && (
+        <dl class="esp__ind revelar">
+          {indicadores.map((ind) => (
+            <div>
+              <dt>{ind.valor}</dt>
+              <dd>
+                {ind.texto}
+                {PREVIEW && !ind.confirmado && <span class="por-confirmar">Por confirmar</span>}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+    <ul class="esp__galeria" aria-label="Galeria do espaço">
+      {galeria.map((g) => (
+        <li class:list={['revelar', `g${g.i}`]}>
+          <Imagem imagem={g.img} legenda={g.legenda} icone={false} class="esp__img" />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .esp__topo { display: flex; flex-wrap: wrap; gap: 48px 80px; margin-bottom: 56px; }
+  .esp__texto { flex: 1 1 520px; min-width: 0; }
+  .esp__desc { margin: 28px 0 0; font-size: 17px; line-height: 1.7; color: var(--texto-escuro-2); max-width: 52ch; }
+  .esp__ind { flex: 1 1 340px; min-width: 0; margin: 0; display: flex; flex-direction: column; }
+  .esp__ind > div { padding: 22px 0; border-top: 1px solid #a6a6a6; display: flex; align-items: baseline; gap: 20px; }
+  .esp__ind > div:first-child { border-top: 2px solid var(--antracite); }
+  .esp__ind > div:last-child { border-bottom: 1px solid #a6a6a6; }
+  .esp__ind dt { font-size: clamp(40px, 4.4vw, 56px); font-weight: 800; letter-spacing: -.03em; line-height: 1; min-width: 4.2ch; }
+  .esp__ind dd { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.45; color: #333; }
+
+  .esp__galeria { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 220px; gap: 12px; }
+  .esp__galeria li { min-width: 0; }
+  .esp__galeria :global(.esp__img) { width: 100%; height: 100%; }
+  .g0 { grid-column: span 2; grid-row: span 2; }
+  .g3 { grid-column: span 2; }
+  .g5 { grid-column: span 3; }
+  @media (max-width: 760px) {
+    .esp__galeria { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 150px; }
+    .g0 { grid-column: span 2; grid-row: span 2; }
+    .g3 { grid-column: auto; }
+    .g5 { grid-column: span 2; }
+  }
+</style>

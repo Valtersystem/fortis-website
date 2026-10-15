@@ -1,0 +1,56 @@
+---
+import { site } from '../content/site';
+import { ABERTO } from '../lib/config';
+import Icon from './Icon.astro';
+
+const { planos } = site;
+const mostrarPlanos = ABERTO && planos.lista.length > 0;
+const t = mostrarPlanos ? planos.aberto : planos.preAbertura;
+---
+<section id="planos" class="sec sec--vermelho" aria-labelledby="planos-titulo">
+  <div class="container">
+    {mostrarPlanos ? (
+      <>
+        <p class="eyebrow">Planos e mensalidades</p>
+        <h2 id="planos-titulo" class="h2 pl__h2">{t.titulo} <em>{t.destaque}</em></h2>
+        <ul class="pl__grelha">
+          {planos.lista.map((p) => (
+            <li class:list={['pl__cartao corte revelar', { 'pl__cartao--destaque': p.destaque }]}>
+              <h3>{p.nome}</h3>
+              <p class="pl__preco">{p.preco}<span> {p.periodo}</span></p>
+              <ul>{p.inclui.map((s) => <li>{s}</li>)}</ul>
+              <a class="btn btn--vermelho" href="#contacto" data-track="click_cta" data-track-label={`plano:${p.nome}`}>Pedir informações</a>
+            </li>
+          ))}
+        </ul>
+        {planos.aberto.notas && <p class="pl__notas">{planos.aberto.notas}</p>}
+      </>
+    ) : (
+      <div class="pl__pre revelar">
+        <div>
+          <p class="eyebrow">Planos e mensalidades</p>
+          <h2 id="planos-titulo" class="h2">{t.titulo} <em>{t.destaque}</em></h2>
+          <p class="pl__texto">{planos.preAbertura.texto}</p>
+        </div>
+        <a class="btn btn--escuro pl__cta" href="#contacto" data-track="click_cta" data-track-label="planos">{planos.preAbertura.cta} <Icon name="seta" size={18} stroke={2.25} /></a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .pl__pre { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 40px 80px; }
+  .pl__pre > div { flex: 1 1 560px; min-width: 0; }
+  .pl__texto { margin: 28px 0 0; font-size: 18px; line-height: 1.6; max-width: 46ch; font-weight: 500; }
+  .pl__cta { min-height: 60px; padding: 0 32px; flex-shrink: 0; }
+  .pl__h2 { margin-bottom: 48px; }
+  .pl__grelha { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .pl__cartao { background: var(--branco); color: var(--antracite); padding: 36px 32px 48px; display: flex; flex-direction: column; gap: 18px; }
+  .pl__cartao--destaque { outline: 4px solid var(--antracite); outline-offset: -4px; }
+  .pl__cartao h3 { margin: 0; font-size: 14px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--vermelho-escuro); }
+  .pl__preco { margin: 0; font-size: 48px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  .pl__preco span { font-size: 16px; font-weight: 600; color: var(--texto-escuro-3); letter-spacing: 0; }
+  .pl__cartao ul { margin: 0; padding: 18px 0 0; list-style: none; border-top: 1px solid var(--cinza); display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: #333; flex-grow: 1; }
+  .pl__notas { margin: 28px 0 0; font-size: 14px; }
+  @media (max-width: 600px) { .pl__cta { width: 100%; } }
+</style>

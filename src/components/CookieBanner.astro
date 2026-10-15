@@ -1,0 +1,29 @@
+---
+import { GA4_ID, url } from '../lib/config';
+---
+{GA4_ID && (
+  <div class="cookies" data-cookies hidden role="region" aria-label="Preferências de cookies">
+    <p>
+      Usamos cookies de medição (Google Analytics) para perceber como o site é usado e melhorá-lo.
+      Só são ativados se aceitares. <a href={url('politica-de-cookies/')}>Saber mais</a>
+    </p>
+    <div class="cookies__botoes">
+      <button type="button" class="btn btn--contorno" data-cookies-recusar>Recusar</button>
+      <button type="button" class="btn btn--contorno" data-cookies-aceitar>Aceitar</button>
+    </div>
+  </div>
+)}
+
+<style>
+  .cookies {
+    position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 60; margin: 0 auto; max-width: 760px;
+    background: var(--antracite-3); border: 1px solid #4a4a4a; border-top: 3px solid var(--vermelho);
+    padding: 20px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
+  }
+  .cookies[hidden] { display: none; }
+  .cookies p { flex: 1 1 320px; margin: 0; font-size: 14px; line-height: 1.55; color: var(--cinza); }
+  .cookies a { color: var(--branco); font-weight: 700; }
+  .cookies__botoes { display: flex; gap: 10px; flex-wrap: wrap; }
+  .cookies .btn { min-height: 44px; padding: 0 20px; font-size: 13px; }
+</style>

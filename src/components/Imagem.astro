@@ -1,0 +1,35 @@
+---
+import type { Imagem } from '../content/site';
+import { url } from '../lib/config';
+import Icon from './Icon.astro';
+
+interface Props {
+  imagem: Imagem | null;
+  /** Texto do marcador quando ainda não há imagem */
+  legenda?: string;
+  class?: string;
+  icone?: boolean;
+  prioridade?: boolean;
+}
+const { imagem, legenda = 'Imagem conceptual', class: className = '', icone = true, prioridade = false } = Astro.props;
+---
+{imagem ? (
+  <div class:list={['marcador-img', className]}>
+    <img
+      class="img-cover"
+      src={url(imagem.src)}
+      alt={imagem.alt}
+      width={imagem.largura}
+      height={imagem.altura}
+      loading={prioridade ? 'eager' : 'lazy'}
+      decoding="async"
+      fetchpriority={prioridade ? 'high' : undefined}
+    />
+    {imagem.conceptual && <span class="marcador-img__label" style="color:#fff;text-shadow:0 1px 2px #000">Imagem conceptual</span>}
+  </div>
+) : (
+  <div class:list={['marcador-img textura', className]} role="img" aria-label={`Imagem conceptual: ${legenda}`}>
+    {icone && <Icon name="imagem" size={44} stroke={1.25} />}
+    <span class="marcador-img__label" aria-hidden="true">{legenda === 'Imagem conceptual' ? legenda : `Imagem conceptual · ${legenda}`}</span>
+  </div>
+)}

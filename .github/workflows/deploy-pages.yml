@@ -1,0 +1,56 @@
+# Publica o site no GitHub Pages (ambiente de TESTES) a cada push para main.
+# Ativar em: Settings › Pages › Build and deployment › Source: GitHub Actions.
+# Variáveis opcionais em: Settings › Secrets and variables › Actions › Variables
+#   PUBLIC_FORM_PROVIDER, PUBLIC_FORM_ENDPOINT, PUBLIC_GA4_ID, PUBLIC_PREVIEW
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: 1
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          PUBLIC_FORM_PROVIDER: ${{ vars.PUBLIC_FORM_PROVIDER }}
+          PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+          PUBLIC_GA4_ID: ${{ vars.PUBLIC_GA4_ID }}
+          # Ambiente de testes: mostra conteúdos por confirmar, com etiqueta
+          PUBLIC_PREVIEW: ${{ vars.PUBLIC_PREVIEW || 'true' }}
+          PUBLIC_INDEXAR: 'false'
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

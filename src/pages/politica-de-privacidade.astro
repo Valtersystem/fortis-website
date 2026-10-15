@@ -1,0 +1,40 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { site } from '../content/site';
+import { url } from '../lib/config';
+
+const { legal } = site;
+const entidade = legal.entidade ?? '[ENTIDADE RESPONSÁVEL]';
+const nif = legal.nif ?? '[NIF]';
+const emailPriv = legal.emailPrivacidade ?? site.contactos.email ?? '[EMAIL DE CONTACTO PARA PRIVACIDADE]';
+const morada = site.morada.confirmada && site.morada.rua ? `${site.morada.rua}, ${site.morada.codigoPostal ?? ''} ${site.morada.localidade}` : '[MORADA DA SEDE]';
+---
+<Legal titulo="Política de Privacidade" descricao="Como a FORTIS Training Center trata os dados pessoais recolhidos através do site.">
+  <h2>1. Responsável pelo tratamento</h2>
+  <p>{entidade}, NIF {nif}, com sede em {morada} (“FORTIS”). Para qualquer questão sobre os teus dados pessoais: <a href={`mailto:${emailPriv}`}>{emailPriv}</a>.</p>
+
+  <h2>2. Que dados recolhemos</h2>
+  <p>Através do formulário de contacto: nome, email, número de telemóvel, modalidade de interesse, mensagem (opcional), as tuas escolhas de consentimento, a data do pedido e a página de origem.</p>
+
+  <h2>3. Para que usamos os dados e com que fundamento</h2>
+  <ul>
+    <li><strong>Responder ao teu pedido de informação</strong> — com base no teu consentimento, dado através da caixa de autorização obrigatória do formulário.</li>
+    <li><strong>Enviar novidades e comunicações da FORTIS</strong> — apenas se assinalares a caixa opcional de marketing. Podes retirar este consentimento a qualquer momento.</li>
+  </ul>
+  <p>O envio do pedido não constitui uma inscrição nem cria qualquer obrigação contratual.</p>
+
+  <h2>4. Durante quanto tempo guardamos os dados</h2>
+  <p>Os dados dos pedidos de informação são conservados durante um máximo de {legal.retencaoMeses} meses após o último contacto, ou até retirares o consentimento, sendo depois eliminados.</p>
+
+  <h2>5. Quem tem acesso aos dados</h2>
+  <p>Apenas a equipa da FORTIS responsável por responder aos pedidos. Para receber e guardar os pedidos usamos um prestador de serviços de formulários ([NOME DO PRESTADOR]), que atua por nossa conta e com as garantias exigidas pelo RGPD. Não vendemos nem cedemos os teus dados a terceiros.</p>
+
+  <h2>6. Os teus direitos</h2>
+  <p>Podes pedir acesso, retificação, eliminação, limitação ou portabilidade dos teus dados, opor-te ao tratamento e retirar o consentimento a qualquer momento, sem afetar a licitude do tratamento anterior, escrevendo para <a href={`mailto:${emailPriv}`}>{emailPriv}</a>. Tens também o direito de apresentar reclamação à Comissão Nacional de Proteção de Dados (<a href="https://www.cnpd.pt" target="_blank" rel="noopener">www.cnpd.pt</a>).</p>
+
+  <h2>7. Segurança</h2>
+  <p>O site usa ligação cifrada (HTTPS) e os pedidos são guardados num serviço com acesso restrito e autenticado.</p>
+
+  <h2>8. Cookies</h2>
+  <p>Sobre cookies e tecnologias semelhantes, consulta a <a href={url('politica-de-cookies/')}>Política de Cookies</a>.</p>
+</Legal>

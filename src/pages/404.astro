@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/config';
+---
+<Base titulo="Página não encontrada | FORTIS Training Center" noindex>
+  <main id="conteudo" class="nf">
+    <img src={url('brand/icon-white.png')} alt="" width="383" height="500" />
+    <h1>Página não encontrada</h1>
+    <p>O endereço que procuras não existe ou mudou de lugar.</p>
+    <a class="btn btn--vermelho" href={url('/')}>Voltar ao início</a>
+  </main>
+</Base>
+
+<style>
+  .nf { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px; text-align: center; }
+  .nf img { width: 72px; height: auto; margin-bottom: 12px; }
+  .nf h1 { margin: 0; font-size: clamp(28px, 4vw, 44px); font-weight: 800; text-transform: uppercase; }
+  .nf p { margin: 0; color: var(--texto-claro-2); }
+</style>

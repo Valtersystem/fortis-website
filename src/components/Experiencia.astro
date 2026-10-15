@@ -1,0 +1,59 @@
+---
+import { site } from '../content/site';
+import Imagem from './Imagem.astro';
+
+const { experiencia } = site;
+---
+<section id="experiencia" class="sec sec--escuro-2" aria-labelledby="experiencia-titulo">
+  <div class="container">
+    <div class="exp__topo revelar">
+      <p class="eyebrow">Experiência FORTIS</p>
+      <h2 id="experiencia-titulo" class="h2">{experiencia.titulo} <em>{experiencia.destaque}</em></h2>
+    </div>
+    <ol class="exp__pilares">
+      {experiencia.pilares.map((p, i) => (
+        <li class="revelar">
+          <span class="exp__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="exp__barra" aria-hidden="true"></span>
+          <h3>{p.titulo}</h3>
+          <p>{p.texto}</p>
+        </li>
+      ))}
+    </ol>
+
+    {experiencia.equipa.length > 0 && (
+      <div class="exp__equipa">
+        <h3 class="exp__equipa-titulo">A equipa</h3>
+        <ul>
+          {experiencia.equipa.map((t) => (
+            <li class="revelar">
+              <Imagem imagem={t.foto} legenda={t.nome} class="exp__foto corte" />
+              <strong>{t.nome}</strong>
+              <span>{t.funcao}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .exp__topo { max-width: 820px; margin-bottom: 64px; }
+  .exp__pilares {
+    list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px; background: var(--linha-escura); border: 1px solid var(--linha-escura);
+  }
+  .exp__pilares li { background: var(--antracite-2); padding: 40px 32px 44px; display: flex; flex-direction: column; gap: 16px; }
+  .exp__num { font-size: 56px; font-weight: 800; line-height: 1; letter-spacing: -.04em; color: #3d3d3d; }
+  .exp__barra { width: 28px; height: 3px; background: var(--vermelho); }
+  .exp__pilares h3 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1.25; }
+  .exp__pilares p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--texto-claro-3); }
+  .exp__equipa { margin-top: 80px; }
+  .exp__equipa-titulo { margin: 0 0 28px; font-size: 24px; font-weight: 800; text-transform: uppercase; }
+  .exp__equipa ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .exp__equipa li { display: flex; flex-direction: column; gap: 8px; }
+  .exp__equipa :global(.exp__foto) { aspect-ratio: 4 / 5; margin-bottom: 8px; }
+  .exp__equipa strong { font-size: 17px; font-weight: 800; text-transform: uppercase; }
+  .exp__equipa span { font-size: 14px; color: var(--texto-claro-3); }
+</style>

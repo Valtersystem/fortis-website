@@ -1,0 +1,24 @@
+# Configuração para produção no Netlify (recomendado: guarda pedidos, notifica por email e exporta CSV).
+# As restantes variáveis (SITE_URL, PUBLIC_GA4_ID, PUBLIC_INDEXAR) definem-se no painel do Netlify.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  ASTRO_TELEMETRY_DISABLED = "1"
+  PUBLIC_FORM_PROVIDER = "netlify"
+  BASE_PATH = "/"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

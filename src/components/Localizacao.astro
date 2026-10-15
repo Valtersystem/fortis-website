@@ -1,0 +1,70 @@
+---
+import { site } from '../content/site';
+import Icon from './Icon.astro';
+
+const { localizacao, morada } = site;
+const temMorada = morada.confirmada && !!morada.rua;
+const temMapa = temMorada && !!morada.mapaEmbedUrl;
+---
+<section id="localizacao" class="sec sec--cinza" aria-labelledby="localizacao-titulo">
+  <div class="container loc">
+    <div class="loc__texto revelar">
+      <p class="eyebrow">Localização</p>
+      <h2 id="localizacao-titulo" class="h2">{localizacao.titulo} <em>{localizacao.destaque}</em></h2>
+      <div class="loc__morada">
+        <Icon name="pin" size={28} stroke={1.75} class="loc__pin" />
+        {temMorada ? (
+          <address>
+            <strong>{morada.rua}</strong>
+            <span>{morada.codigoPostal} {morada.localidade}</span>
+          </address>
+        ) : (
+          <div>
+            <strong>{morada.localidade}, {site.pais}</strong>
+            <span>{localizacao.semMorada}</span>
+          </div>
+        )}
+      </div>
+      <div class="loc__botoes">
+        {temMorada && morada.direcoesUrl && (
+          <a class="btn btn--vermelho" href={morada.direcoesUrl} target="_blank" rel="noopener" data-track="click_directions">
+            <Icon name="direcoes" size={18} />Como chegar<span class="sr-only"> (abre numa nova janela)</span>
+          </a>
+        )}
+        <a class="btn btn--escuro" href="#contacto">Contactar</a>
+      </div>
+    </div>
+    <div class="loc__mapa corte revelar">
+      {temMapa ? (
+        <iframe
+          src={morada.mapaEmbedUrl!}
+          title={`Mapa: ${site.nome}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      ) : (
+        <div class="loc__mapa-vazio textura">
+          <Icon name="pin" size={48} stroke={1.5} class="loc__pin" />
+          <p>Mapa disponível após confirmação da morada</p>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .loc { display: flex; flex-wrap: wrap; gap: 48px 80px; align-items: center; }
+  .loc__texto { flex: 1 1 420px; min-width: 0; }
+  .loc__morada { margin-top: 32px; display: flex; gap: 16px; align-items: flex-start; }
+  .loc__morada :global(.loc__pin) { flex-shrink: 0; margin-top: 2px; color: var(--vermelho); }
+  .loc__morada address, .loc__morada > div { font-style: normal; display: flex; flex-direction: column; gap: 6px; }
+  .loc__morada strong { font-size: 20px; }
+  .loc__morada span { font-size: 15px; line-height: 1.6; color: var(--texto-escuro-2); }
+  .loc__botoes { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .loc__mapa { flex: 1 1 480px; min-width: 0; min-height: 420px; background: #262626; display: flex; }
+  .loc__mapa iframe { border: 0; width: 100%; min-height: 420px; }
+  .loc__mapa-vazio { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 32px; text-align: center; }
+  .loc__mapa-vazio :global(.loc__pin) { color: var(--vermelho); }
+  .loc__mapa-vazio p { margin: 0; max-width: 28ch; font-size: 13px; font-weight: 600; line-height: 1.6; letter-spacing: .12em; text-transform: uppercase; color: var(--texto-claro-2); }
+  @media (max-width: 600px) { .loc__mapa, .loc__mapa iframe { min-height: 300px; } }
+</style>

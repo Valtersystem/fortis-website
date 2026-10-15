@@ -1,0 +1,37 @@
+---
+import Legal from '../layouts/Legal.astro';
+import { GA4_ID } from '../lib/config';
+---
+<Legal titulo="Política de Cookies" descricao="Que cookies o site da FORTIS Training Center utiliza e como gerir as tuas preferências.">
+  <h2>O que são cookies</h2>
+  <p>Cookies são pequenos ficheiros guardados no teu navegador quando visitas um site. Também usamos armazenamento local do navegador para memorizar a tua escolha sobre cookies.</p>
+
+  <h2>Que cookies usamos</h2>
+  <table>
+    <thead><tr><th scope="col">Nome</th><th scope="col">Finalidade</th><th scope="col">Duração</th><th scope="col">Tipo</th></tr></thead>
+    <tbody>
+      <tr><td>fortis-consentimento</td><td>Guarda a tua escolha sobre cookies de medição (armazenamento local, não é enviado a terceiros).</td><td>Até a apagares</td><td>Necessário</td></tr>
+      {GA4_ID && (
+        <>
+          <tr><td>_ga</td><td>Google Analytics: distinguir visitantes para estatísticas agregadas.</td><td>2 anos</td><td>Medição — só com consentimento</td></tr>
+          <tr><td>_ga_*</td><td>Google Analytics: manter o estado da sessão.</td><td>2 anos</td><td>Medição — só com consentimento</td></tr>
+        </>
+      )}
+    </tbody>
+  </table>
+  {GA4_ID ? (
+    <p>Os cookies de medição só são ativados se carregares em “Aceitar”. Podes mudar de ideias a qualquer momento através de <button type="button" data-cookies-prefs class="lk">Preferências de cookies</button>, também disponível no rodapé.</p>
+  ) : (
+    <p>Neste momento o site não utiliza cookies de medição ou publicidade.</p>
+  )}
+
+  <h2>Mapas</h2>
+  <p>Quando o mapa da localização estiver disponível, é fornecido pelo Google Maps, que pode definir os seus próprios cookies ao ser apresentado.</p>
+
+  <h2>Como apagar cookies</h2>
+  <p>Podes apagar ou bloquear cookies nas definições do teu navegador. Bloquear cookies necessários pode afetar o funcionamento do site.</p>
+</Legal>
+
+<style>
+  .lk { background: none; border: 0; padding: 0; color: var(--vermelho-escuro); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+</style>

@@ -1,0 +1,57 @@
+---
+import { site } from '../content/site';
+import { PREVIEW, visivel } from '../lib/config';
+import Icon from './Icon.astro';
+import Imagem from './Imagem.astro';
+
+const { modalidades } = site;
+const lista = modalidades.lista.filter(visivel);
+---
+{lista.length > 0 && (
+  <section id="modalidades" class="sec sec--escuro" aria-labelledby="modalidades-titulo">
+    <div class="container">
+      <div class="mod__topo revelar">
+        <div>
+          <p class="eyebrow">Modalidades</p>
+          <h2 id="modalidades-titulo" class="h2">{modalidades.titulo} <em>{modalidades.destaque}</em></h2>
+        </div>
+        <p class="mod__intro">{modalidades.intro}</p>
+      </div>
+      <ul class="mod__grelha">
+        {lista.map((m, i) => (
+          <li class="mod__cartao corte revelar">
+            <div class="mod__media">
+              <Imagem imagem={m.imagem} class="mod__img" />
+              <span class="mod__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            </div>
+            <div class="mod__corpo">
+              <h3>
+                {m.nome}
+                {PREVIEW && !m.confirmado && <span class="por-confirmar">Por confirmar</span>}
+              </h3>
+              <p>{m.texto}</p>
+              <a class="link-seta" href="#contacto" data-modalidade={m.nome} data-track="click_cta" data-track-label={`modalidade:${m.nome}`}>
+                Tenho interesse<span class="sr-only"> em {m.nome}</span> <Icon name="seta" size={16} stroke={2.25} />
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .mod__topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 48px; margin-bottom: 56px; }
+  .mod__topo > div { flex: 1 1 480px; min-width: 0; }
+  .mod__intro { flex: 0 1 380px; margin: 0; font-size: 16px; line-height: 1.65; color: var(--texto-claro-3); }
+  .mod__grelha { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  .mod__cartao { background: var(--superficie); display: flex; flex-direction: column; transition: transform .25s ease, opacity .6s ease; }
+  .mod__cartao:hover { transform: translateY(-4px); }
+  .mod__media { position: relative; }
+  .mod__media :global(.mod__img) { aspect-ratio: 4 / 3; }
+  .mod__num { position: absolute; top: 0; left: 0; background: var(--vermelho); color: var(--branco); font-size: 13px; font-weight: 800; padding: 8px 12px; letter-spacing: .06em; }
+  .mod__corpo { padding: 28px 28px 40px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+  .mod__corpo h3 { margin: 0; font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; line-height: 1.2; }
+  .mod__corpo p { margin: 0 0 12px; font-size: 15px; line-height: 1.6; color: var(--texto-claro-2); flex-grow: 1; }
+</style>

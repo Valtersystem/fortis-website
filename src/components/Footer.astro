@@ -1,0 +1,66 @@
+---
+import { site } from '../content/site';
+import { url } from '../lib/config';
+import Icon from './Icon.astro';
+
+const { contactos } = site;
+const ano = new Date().getFullYear();
+---
+<footer class="rodape">
+  <div class="container">
+    <div class="rodape__topo">
+      <div class="rodape__marca">
+        <img src={url('brand/logo-horizontal-white.png')} alt="FORTIS Training Center" width="1045" height="200" loading="lazy" />
+        <p>{site.slogan}</p>
+      </div>
+      <div class="rodape__col">
+        <h2>Contactos</h2>
+        <ul>
+          {contactos.email && <li><a href={`mailto:${contactos.email}`} data-track="click_email">{contactos.email}</a></li>}
+          {contactos.telefone && <li><a href={`tel:${contactos.telefone.replace(/\s/g, '')}`} data-track="click_phone">{contactos.telefone}</a></li>}
+          {contactos.whatsapp && <li><a href={`https://wa.me/${contactos.whatsapp}`} target="_blank" rel="noopener" data-track="click_whatsapp">WhatsApp</a></li>}
+          <li>{site.morada.confirmada && site.morada.rua ? `${site.morada.rua}, ` : ''}{site.morada.localidade}, {site.pais}</li>
+          <li><a href={`${url("/")}#contacto`}>Formulário de contacto</a></li>
+        </ul>
+      </div>
+      {contactos.instagram && (
+        <div class="rodape__col">
+          <h2>Segue-nos</h2>
+          <ul>
+            <li>
+              <a class="rodape__social" href={contactos.instagram} target="_blank" rel="noopener" data-track="click_instagram">
+                <Icon name="instagram" size={22} stroke={1.75} />{contactos.instagramHandle ?? 'Instagram'}<span class="sr-only"> no Instagram (abre numa nova janela)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      )}
+    </div>
+    <div class="rodape__base">
+      <span>© {ano} {site.nome}{site.legal.entidade ? ` · ${site.legal.entidade}` : ''}. Todos os direitos reservados.</span>
+      <ul>
+        <li><a href={url('politica-de-privacidade/')}>Política de Privacidade</a></li>
+        <li><a href={url('politica-de-cookies/')}>Política de Cookies</a></li>
+        {import.meta.env.PUBLIC_GA4_ID && <li><button type="button" data-cookies-prefs>Preferências de cookies</button></li>}
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .rodape { background: var(--antracite-3); border-top: 4px solid var(--vermelho); padding: 72px 0 32px; }
+  .rodape__topo { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 48px 64px; padding-bottom: 56px; border-bottom: 1px solid var(--linha-escura); }
+  .rodape__marca { flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+  .rodape__marca img { height: 36px; width: auto; align-self: flex-start; }
+  .rodape__marca p { margin: 0; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--cinza); }
+  .rodape__col { flex: 0 1 240px; }
+  .rodape__col h2 { margin: 0 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-claro-3); }
+  .rodape__col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font-size: 15px; color: var(--cinza); }
+  .rodape__col a { color: var(--cinza); text-decoration: none; }
+  .rodape__col a:hover { color: var(--branco); text-decoration: underline; }
+  .rodape__social { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+  .rodape__base { padding-top: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 13px; color: var(--texto-claro-3); }
+  .rodape__base ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .rodape__base a, .rodape__base button { color: var(--texto-claro-2); background: none; border: 0; padding: 0; cursor: pointer; font-size: 13px; text-decoration: underline; }
+  .rodape__base a:hover, .rodape__base button:hover { color: var(--branco); }
+</style>

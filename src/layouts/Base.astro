@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import { site } from '../content/site';
+import { INDEXAR, url } from '../lib/config';
+import CookieBanner from '../components/CookieBanner.astro';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+  /** Páginas legais: nunca indexar enquanto forem rascunho */
+  noindex?: boolean;
+  schema?: boolean;
+}
+const { titulo = site.seo.titulo, descricao = site.seo.descricao, noindex = false, schema = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL(url('brand/og-image.jpg'), Astro.site).href;
+const robots = INDEXAR && !noindex ? 'index, follow' : 'noindex, nofollow';
+
+// Dados estruturados só com informação confirmada.
+const { contactos, morada } = site;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'HealthClub',
+  name: site.nome,
+  description: site.seo.descricao,
+  url: new URL(url('/'), Astro.site).href,
+  logo: new URL(url('brand/icon-512.png'), Astro.site).href,
+  image: ogImage,
+  slogan: site.slogan,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: morada.localidade,
+    addressRegion: site.regiao,
+    addressCountry: 'PT',
+    ...(morada.confirmada && morada.rua ? { streetAddress: morada.rua } : {}),
+    ...(morada.confirmada && morada.codigoPostal ? { postalCode: morada.codigoPostal } : {}),
+  },
+  ...(morada.confirmada && morada.latitude && morada.longitude
+    ? { geo: { '@type': 'GeoCoordinates', latitude: morada.latitude, longitude: morada.longitude } }
+    : {}),
+  ...(contactos.telefone ? { telephone: contactos.telefone } : {}),
+  ...(contactos.email ? { email: contactos.email } : {}),
+  ...(contactos.instagram ? { sameAs: [contactos.instagram] } : {}),
+};
+---
+<!doctype html>
+<html lang="pt-PT" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#1F1F1F" />
+
+    <link rel="icon" type="image/png" sizes="48x48" href={url('brand/favicon-48.png')} />
+    <link rel="icon" type="image/png" sizes="512x512" href={url('brand/icon-512.png')} />
+    <link rel="apple-touch-icon" href={url('brand/apple-touch-icon.png')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_PT" />
+    <meta property="og:site_name" content={site.nome} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {INDEXAR && <link rel="sitemap" href={url('sitemap.xml')} />}
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}
+    <script is:inline>document.documentElement.classList.remove('no-js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+    <slot />
+    <CookieBanner />
+    <script>
+      import { iniciarAnalytics } from '../scripts/analytics';
+      iniciarAnalytics();
+
+      // Entrada discreta dos blocos ao fazer scroll (desligada com reduced-motion via CSS)
+      const els = document.querySelectorAll('.revelar');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); }
+          }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('visivel'));
+      }
+    </script>
+  </body>
+</html>

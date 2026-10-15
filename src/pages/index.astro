@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Sobre from '../components/Sobre.astro';
+import Modalidades from '../components/Modalidades.astro';
+import Espaco from '../components/Espaco.astro';
+import Experiencia from '../components/Experiencia.astro';
+import Planos from '../components/Planos.astro';
+import Localizacao from '../components/Localizacao.astro';
+import Faq from '../components/Faq.astro';
+import Contacto from '../components/Contacto.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../content/site';
+import { visivel } from '../lib/config';
+
+const temModalidades = site.modalidades.lista.some(visivel);
+const links = [
+  { href: '#sobre', label: 'Sobre' },
+  ...(temModalidades ? [{ href: '#modalidades', label: 'Modalidades' }] : []),
+  { href: '#espaco', label: 'Espaço' },
+  { href: '#planos', label: 'Planos' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '#contacto', label: 'Contacto' },
+];
+---
+<Base schema>
+  <Header links={links} />
+  <main id="conteudo" tabindex="-1">
+    <Hero />
+    <Sobre />
+    <Modalidades />
+    <Espaco />
+    <Experiencia />
+    <Planos />
+    <Localizacao />
+    <Faq />
+    <Contacto />
+  </main>
+  <Footer />
+
+  <div class="cta-movel" data-cta-movel>
+    <a class="btn btn--vermelho" href="#contacto" data-track="click_cta" data-track-label="barra_movel">Quero saber mais</a>
+  </div>
+</Base>
+
+<style>
+  .cta-movel { display: none; }
+  @media (max-width: 960px) {
+    .cta-movel {
+      display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: var(--antracite); border-top: 1px solid var(--linha-escura);
+      transition: transform .25s ease;
+    }
+    .cta-movel .btn { width: 100%; }
+    .cta-movel.escondido { transform: translateY(110%); }
+    :global(.rodape) { padding-bottom: 104px; }
+  }
+</style>
+
+<script>
+  // Esconde a barra fixa quando o formulário (ou o topo) já está visível
+  const barra = document.querySelector<HTMLElement>('[data-cta-movel]');
+  const alvos = ['#topo', '#contacto'].map((s) => document.querySelector(s)).filter((el): el is Element => !!el);
+  if (barra && 'IntersectionObserver' in window) {
+    const visiveis = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => (e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target)));
+      barra.classList.toggle('escondido', visiveis.size > 0);
+    }, { threshold: 0.15 });
+    alvos.forEach((a) => io.observe(a));
+  }
+</script>

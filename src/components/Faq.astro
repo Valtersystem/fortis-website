@@ -1,0 +1,50 @@
+---
+import { site } from '../content/site';
+import Icon from './Icon.astro';
+---
+<section id="faq" class="sec sec--claro" aria-labelledby="faq-titulo">
+  <div class="container faq">
+    <div class="faq__intro revelar">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-titulo" class="h2">Perguntas <em>frequentes.</em></h2>
+      <p>Não encontras o que procuras? <a href="#contacto">Envia-nos a tua pergunta.</a></p>
+    </div>
+    <div class="faq__lista">
+      {site.faq.map((f, i) => (
+        <details class="faq__item" name="faq" open={i === 0}>
+          <summary>
+            <span>{f.p}</span>
+            <span class="faq__icone"><Icon name="mais" size={16} stroke={2.5} /></span>
+          </summary>
+          <p>{f.r}</p>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq { display: flex; flex-wrap: wrap; gap: 48px 80px; }
+  .faq__intro { flex: 1 1 320px; min-width: 0; }
+  .faq__intro > p:last-child { margin: 24px 0 0; font-size: 16px; line-height: 1.65; color: var(--texto-escuro-3); max-width: 34ch; }
+  .faq__intro a { color: var(--vermelho-escuro); font-weight: 700; }
+  .faq__lista { flex: 2 1 560px; min-width: 0; border-top: 2px solid var(--antracite); }
+  .faq__item { border-bottom: 1px solid #d4d4d4; }
+  .faq__item summary {
+    list-style: none; cursor: pointer; padding: 26px 0; min-height: 44px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    font-size: 18px; font-weight: 700; color: var(--antracite);
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__icone {
+    flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--antracite); transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .faq__item[open] .faq__icone { transform: rotate(45deg); background: var(--vermelho); border-color: var(--vermelho); color: var(--branco); }
+  .faq__item summary:hover .faq__icone { border-color: var(--vermelho); }
+  .faq__item p { margin: 0; padding: 0 56px 28px 0; font-size: 16px; line-height: 1.7; color: var(--texto-escuro-2); }
+  @media (max-width: 600px) {
+    .faq__item summary { font-size: 16px; padding: 20px 0; }
+    .faq__item p { padding-right: 0; }
+  }
+</style>
